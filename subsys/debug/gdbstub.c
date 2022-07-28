@@ -23,9 +23,15 @@ LOG_MODULE_REGISTER(gdbstub);
 
 #include <zephyr/debug/gdbstub.h>
 #include "gdbstub_backend.h"
+static inline void icache_invalidate_all(void)
+{
+#if XCHAL_ICACHE_SIZE > 0
+	xthal_icache_all_invalidate();
+#endif
+}
 
 /* +1 is for the NULL character added during receive */
-#define GDB_PACKET_SIZE     (CONFIG_GDBSTUB_BUF_SZ + 1)
+#define GDB_PACKET_SIZE     (840 + 1)
 
 /* GDB remote serial protocol does not define errors value properly
  * and handle all error packets as the same the code error is not
@@ -549,6 +555,8 @@ static int gdb_mem_write(const uint8_t *buf, uintptr_t addr,
 	}
 
 out:
+	icache_invalidate_all();
+	__asm__ volatile("isync");
 	return ret;
 }
 

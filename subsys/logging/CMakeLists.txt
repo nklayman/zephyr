@@ -116,3 +116,15 @@ if(NOT CONFIG_LOG_MODE_MINIMAL)
 else()
   zephyr_sources(log_minimal.c)
 endif()
+
+if(CONFIG_NO_OPTIMIZATIONS)
+  if(CONFIG_LOG_MODE_MINIMAL)
+    zephyr_sources(
+      log_core.c
+      log_msg.c
+      log_mgmt.c
+    )
+  else()
+    zephyr_sources(log_minimal.c)
+  endif()
+endif()

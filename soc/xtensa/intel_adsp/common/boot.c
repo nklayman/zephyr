@@ -140,7 +140,7 @@ __imr void win_setup(void)
 			     | CAVS_DMWBA_ENABLE);
 
 	CAVS_WIN[3].dmwlo = HP_SRAM_WIN3_SIZE | 0x7;
-	CAVS_WIN[3].dmwba = (HP_SRAM_WIN3_BASE | CAVS_DMWBA_READONLY
+	CAVS_WIN[3].dmwba = (HP_SRAM_WIN3_BASE// | CAVS_DMWBA_READONLY
 			     | CAVS_DMWBA_ENABLE);
 }
 
@@ -165,7 +165,7 @@ __imr void boot_core0(void)
 	win_setup();
 	lp_sram_init();
 	parse_manifest();
-	soc_trace_init();
+	// soc_trace_init();
 	z_xtensa_cache_flush_all();
 
 	/* Zephyr! */

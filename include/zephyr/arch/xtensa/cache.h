@@ -5,6 +5,7 @@
 #ifndef ZEPHYR_INCLUDE_ARCH_XTENSA_CACHE_H_
 #define ZEPHYR_INCLUDE_ARCH_XTENSA_CACHE_H_
 
+#include "toolchain/common.h"
 #include <xtensa/config/core-isa.h>
 #include <zephyr/toolchain.h>
 #include <zephyr/sys/util.h>
@@ -153,7 +154,7 @@ static inline void __sparse_cache *arch_xtensa_cached_ptr(void *ptr)
  * @param ptr A pointer to a valid C object
  * @return A pointer to the same object bypassing the L1 dcache
  */
-static inline void *arch_xtensa_uncached_ptr(void __sparse_cache *ptr)
+static ALWAYS_INLINE void *arch_xtensa_uncached_ptr(void __sparse_cache *ptr)
 {
 	return (void *)z_xtrpoflip((uint32_t) ptr,
 				   CONFIG_XTENSA_UNCACHED_REGION,

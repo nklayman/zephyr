@@ -11,6 +11,13 @@
 
 #include <xtensa-asm2-context.h>
 #include <xtensa/corebits.h>
+// TODO: Include this from modules/audio/sof/src/arch/xtensa/include/arch/lib/cache.h
+static inline void icache_invalidate_all(void)
+{
+#if XCHAL_ICACHE_SIZE > 0
+	xthal_icache_all_invalidate();
+#endif
+}
 
 static bool not_first_break;
 
@@ -705,7 +712,9 @@ size_t arch_gdb_reg_readone(struct gdb_ctx *ctx, uint8_t *buf, size_t buflen,
 	int idx;
 	size_t ret;
 
-	ret = 0;
+	buf[0] = 'x';
+	buf[1] = 'x';
+	ret = 2;
 	for (idx = 0; idx < ctx->num_regs; idx++) {
 		reg = &ctx->regs[idx];
 
@@ -840,6 +849,8 @@ int arch_gdb_add_breakpoint(struct gdb_ctx *ctx, uint8_t type,
 	}
 
 out:
+	icache_invalidate_all();
+	__asm__ volatile("isync");
 	return ret;
 }
 
@@ -910,6 +921,8 @@ int arch_gdb_remove_breakpoint(struct gdb_ctx *ctx, uint8_t type,
 	}
 
 out:
+	icache_invalidate_all();
+	__asm__ volatile("isync");
 	return ret;
 }
 
@@ -974,7 +987,6 @@ void arch_gdb_init(void)
 	 */
 	z_xtensa_irq_enable(XCHAL_NUM_EXTINTERRUPTS +
 			    XCHAL_DEBUGLEVEL - 2);
-
 	/*
 	 * Break and go into the GDB stub.
 	 * The underscore in front is to avoid toolchain

@@ -23,6 +23,7 @@ add_subdirectory_ifdef(
 zephyr_sources_ifdef(
   CONFIG_GDBSTUB
   gdbstub.c
+  gdbstub/gdbstub_backend_sram.c
   )
 
 zephyr_sources_ifdef(
