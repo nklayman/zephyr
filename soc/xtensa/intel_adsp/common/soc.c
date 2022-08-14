@@ -14,7 +14,7 @@ extern void soc_mp_init(void);
 
 static __imr int soc_init(const struct device *dev)
 {
-	power_init();
+	// power_init();
 
 #ifdef CONFIG_CAVS_CLOCK
 	cavs_clock_init();
